@@ -8,6 +8,40 @@
     <div style="color: #ccc;">
       This article is from Evan You on <a target="_blank" href="https://medium.com/the-vue-point/plans-for-the-next-iteration-of-vue-js-777ffea6fabf">medium</a>
     </div>
+    <el-table
+      :data="tableData"
+      border
+      style="width: 100%"
+    >
+      <el-table-column
+        prop="date"
+        label="Date"
+        width="180"
+      />
+      <el-table-column
+        prop="name"
+        label="Name"
+        width="180"
+      />
+      <el-table-column
+        prop="address"
+        label="Address"
+      />
+      <el-table-column
+        prop="date"
+        label="Date"
+        width="180"
+      />
+      <el-table-column
+        prop="name"
+        label="Name"
+        width="180"
+      />
+      <el-table-column
+        prop="address"
+        label="Address"
+      />
+    </el-table>
     <div ref="content" class="node-article-content" v-html="article.content" />
   </div>
 </template>
@@ -18,7 +52,24 @@ export default {
   data() {
     return {
       article: '',
-      fullscreenLoading: true
+      fullscreenLoading: true,
+      tableData: [{
+        date: '2016-05-03',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles'
+      }, {
+        date: '2016-05-02',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles'
+      }, {
+        date: '2016-05-04',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles'
+      }, {
+        date: '2016-05-01',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles'
+      }]
     }
   },
   mounted() {

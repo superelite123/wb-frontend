@@ -2,18 +2,18 @@
   <div class="main-content">
     <el-row class="header">
       <el-col :span="16">
-        <img class=" wscnph" src="https://wpimg.wallstcn.com/b8a1d7be-0b73-41b8-be8c-7c01c93cab66.png" style="width:100px;height:100px">
+        <img class="wscnph" src="@/assets/wbcolorlogo.jpg" style="width:120px;height:120px" alt="404">
       </el-col>
       <el-col :span="8">
-        <p class="bolderP">{{ order.company_detail.companyname }}</p>
-        <p class="lightP">{{ order.company_detail.address1 }}</p>
-        <p class="lightP">
+        <p class="bolderP headerP">{{ order.company_detail.companyname }}</p>
+        <p class="lightP headerP">{{ order.company_detail.address1 }}</p>
+        <p class="lightP headerP">
           {{ order.company_detail.city }}&nbsp;
           {{ order.company_detail.state }}&nbsp;
           {{ order.company_detail.zip }}&nbsp;
         </p>
-        <p class="lightP">Cultivation LIC: CCL19-00006000</p>
-        <p class="lightP">{{ order.company_detail.phone }}</p>
+        <p class="lightP headerP">Cultivation LIC: CCL19-00006000</p>
+        <p class="lightP headerP">{{ order.company_detail.phone }}</p>
       </el-col>
     </el-row>
     <el-row>
@@ -61,7 +61,7 @@
     <template>
       <el-table
         :data="order.items"
-        style="width: 100%"
+        style="width: 100%;"
       >
         <el-table-column
           prop="strain_label"
@@ -74,66 +74,72 @@
         <el-table-column
           prop="qty"
           label="Qty"
+          width="50"
         />
         <el-table-column
           prop="units"
           label="Units"
+          width="60"
         />
         <el-table-column
           prop="unit_price"
           label="Base Price"
+          width="100"
         />
         <el-table-column
           prop="cpu"
           label="CPU"
+          width="60"
         />
         <el-table-column
           prop="discount"
           label="Discount"
+          width="100"
         />
         <el-table-column
           prop="dis_type"
           label="Discount Type"
+          width="130"
         />
         <el-table-column
           prop="e_discount"
           label="Extra Discount"
+          width="130"
         />
         <el-table-column
           prop="bp"
           label="Sub Total"
+          width="100"
         />
         <el-table-column
           prop="extended"
           label="Extended"
+          width="100"
         />
         <el-table-column
           prop="t_note"
           label="Line Note"
+          width="150"
         />
         <el-table-column
           prop="ap"
           label="Adjust Total"
+          width="130"
         />
       </el-table>
       <el-table
-        :data="tableData"
+        :data="orderTotal"
         border
-        style="width: 40%;margin-top:30px"
+        :show-header="false"
+        style="width: 40%;margin-top:30px;"
       >
         <el-table-column
-          prop="date"
-          label="Date"
-          width="180"
-        />
-        <el-table-column
           prop="name"
-          label="Name"
-          width="180"
+          class-name="bold-td"
         />
         <el-table-column
-          prop="address"
-          label="Address"
+          prop="value"
+          width="180"
         />
       </el-table>
     </template>
@@ -147,26 +153,8 @@ const wbOrderResource = new WBOrderResource()
 export default {
   data() {
     return {
-      article: '',
-      fullscreenLoading: false,
-      tableData: [{
-        date: '2016-05-03',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles'
-      }, {
-        date: '2016-05-02',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles'
-      }, {
-        date: '2016-05-04',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles'
-      }, {
-        date: '2016-05-01',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles'
-      }],
-      order: { company_detail: '', customer: '', salesperson: '' }
+      order: { company_detail: '', customer: '', salesperson: '' },
+      orderTotal: []
     }
   },
   mounted() {
@@ -175,12 +163,23 @@ export default {
   methods: {
     async fetchData() {
       this.order = await wbOrderResource.getOrderDetail(this.$route.query.id)
+      const total = this.order.total_info
+      this.orderTotal.push({ name: 'Total Base Price:', value: total.base_price })
+      this.orderTotal.push({ name: 'Discount Amount:', value: total.discount })
+      this.orderTotal.push({ name: 'Total Extra Discount:', value: total.e_discount })
+      this.orderTotal.push({ name: 'Promotion Value:', value: total.promotion })
+      this.orderTotal.push({ name: 'Sub Total:', value: total.extended })
+      this.orderTotal.push({ name: 'CA Excise Tax Based On Total Base Price @27%:', value: total.tax })
+      this.orderTotal.push({ name: 'Total Due:', value: total.adjust_price })
     }
   }
 }
 </script>
 
 <style lang="scss">
+.bold-td{
+  font-weight: bolder;
+}
 @mixin clearfix {
   &:before {
     display: table;
@@ -198,6 +197,9 @@ export default {
   table{
     font-size:1vw;
   }
+}
+.headerP{
+  margin: 8px;
 }
 .main-content{
   padding: 20px;

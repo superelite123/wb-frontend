@@ -151,6 +151,11 @@ export const asyncRoutes = [
     hidden: true
   },
 
+  {
+    path: '/pdf/download',
+    component: () => import('@/views/pdf/download'),
+    hidden: true
+  },
   /** when your routing map is too long, you can split it into small modules **/
   orderRoutes,
   // 404 page must be placed at the end !!!
