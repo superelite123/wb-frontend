@@ -202,36 +202,21 @@
         </template>
       </el-table-column>
     </el-table>
-    <table class="table table-bordered tblTotal" style="margin-top:30px;text-align:left">
-      <tr>
-        <td>Total Base Price:</td>
-        <td>{{ orderTotal.st }}</td>
-      </tr>
-      <tr>
-        <td>Discount Amount:</td>
-        <td>{{ orderTotal.discount }}</td>
-      </tr>
-      <tr>
-        <td>Extra Discount Amount:</td>
-        <td>{{ orderTotal.e_discount }}</td>
-      </tr>
-      <tr>
-        <td>Promotion Value:</td>
-        <td>{{ orderTotal.pr }}</td>
-      </tr>
-      <tr>
-        <td>Sub Total:</td>
-        <td>{{ orderTotal.extended }}</td>
-      </tr>
-      <tr>
-        <td>CA Excise Tax Based On Total Base Price @ 27%:</td>
-        <td>{{ orderTotal.tax }}</td>
-      </tr>
-      <tr>
-        <td>Total Due:</td>
-        <td>{{ orderTotal.ap }}</td>
-      </tr>
-    </table>
+    <el-table
+      :data="orderTotalTableData"
+      border
+      :show-header="false"
+      style="width: 50%;margin-top:30px;"
+    >
+      <el-table-column
+        prop="name"
+        class-name="bold-td"
+      />
+      <el-table-column
+        prop="value"
+        width="180"
+      />
+    </el-table>
     <el-button type="primary" style="margin-top:45px;" @click="onSubmit">
       {{ $t('order.form.btnSubmit') }}
     </el-button>
@@ -410,7 +395,16 @@ export default {
         extended: 0,
         tax: 0,
         ap: 0
-      }
+      },
+      orderTotalTableData: [
+        { name: 'Total Base Price:', value: '0' },
+        { name: 'Discount Amount:', value: '0' },
+        { name: 'Extra Discount Amount:', value: '0' },
+        { name: 'Promotion Value:', value: '0' },
+        { name: 'Sub Total:', value: '0' },
+        { name: 'CA Excise Tax Based On Total Base Price @ 27%:', value: '0' },
+        { name: 'Total Due:', value: '0' }
+      ]
     }
   },
   created() {
@@ -654,6 +648,7 @@ export default {
       this.orderTotal.extended = this.orderTotal.extended.toFixed(2)
       this.orderTotal.tax = this.orderTotal.tax.toFixed(2)
       this.orderTotal.ap = this.orderTotal.ap.toFixed(2)
+      this.updateOrderTotalTableData()
     },
     resetCurrentRow() {
       this.currentRow.strain = null
@@ -686,7 +681,23 @@ export default {
       this.orderTotal.extended = 0
       this.orderTotal.tax = 0
       this.orderTotal.ap = 0
+      this.updateOrderTotalTableData()
+    },
+    updateOrderTotalTableData() {
+      this.orderTotalTableData = []
+      this.orderTotalTableData.push({ name: 'Total Base Price:', value: this.orderTotal.st })
+      this.orderTotalTableData.push({ name: 'Discount Amount:', value: this.orderTotal.discount })
+      this.orderTotalTableData.push({ name: 'Extra Discount Amount:', value: this.orderTotal.e_discount })
+      this.orderTotalTableData.push({ name: 'Promotion Value:', value: this.orderTotal.pr })
+      this.orderTotalTableData.push({ name: 'Sub Total:', value: this.orderTotal.extended })
+      this.orderTotalTableData.push({ name: 'CA Excise Tax Based On Total Base Price @ 27%:', value: this.orderTotal.tax })
+      this.orderTotalTableData.push({ name: 'Total Due:', value: this.orderTotal.ap })
     }
   }
 }
 </script>
+<style>
+.bold-td{
+  font-weight: bolder;
+}
+</style>

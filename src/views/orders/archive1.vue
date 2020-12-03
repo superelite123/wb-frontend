@@ -2,7 +2,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <h2>Pending Approval to Fulfill</h2>
+      <h2>FulFillment</h2>
       <el-row>
         <el-col :sm="12">
           <el-date-picker
@@ -24,7 +24,7 @@
           <el-input v-model="query.keyword" placeholder="Search" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-col>
       </el-row>
-      <el-table ref="mainTbl" v-loading="loading" show-summary :data="list" :summary-method="getMainTblSummaries" border fit highlight-current-row style="width: 100%" @expand-change="handleExpandRow">
+      <el-table ref="mainTbl" v-loading="fulfillmentLoading" :row-style="setRowStyle" :data="listFulfillment" border fit style="width: 100%">
         <el-table-column align="center" type="expand">
           <template slot-scope="props">
             <el-table
@@ -32,6 +32,11 @@
               border
               style="width: 100%"
             >
+              <el-table-column
+                prop="index"
+                label="No"
+                width="50"
+              />
               <el-table-column
                 prop="description"
                 label="Description"
@@ -44,160 +49,52 @@
               <el-table-column
                 prop="units"
                 label="Units"
-                width="70"
+                width="50"
               />
               <el-table-column
                 prop="unit_price"
-                label="Unit price"
-                width="100"
+                label="Unit Price"
+                width="50"
               />
               <el-table-column
                 prop="cpu"
                 label="CPU"
-                width="50"
+                width="100"
               />
               <el-table-column
                 prop="discount"
                 label="Discount"
-                width="100"
+                width="50"
               />
               <el-table-column
                 prop="discount_label"
                 label="Discount Type"
-                width="130"
+                width="120"
               />
               <el-table-column
                 prop="e_discount"
                 label="Extra Discount"
-                width="130"
+                width="50"
               />
               <el-table-column
                 prop="sub_total"
-                label="Sub"
-                width="100"
+                label="Sub Total"
+                width="50"
               />
               <el-table-column
                 prop="less_discount"
                 label="Extended"
-                width="100"
+                width="50"
               />
               <el-table-column
                 prop="tax_note"
                 label="Line Note"
-                width="100"
+                width="150"
               />
               <el-table-column
                 prop="adjust_price"
                 label="Adjust Price"
-                width="130"
-              />
-            </el-table>
-            <h3>Invoice Tracker</h3>
-            <el-table
-              :data="props.row.myInvoices"
-              border
-              show-summary
-              sum-text="Total"
-              empty-text="No Active Invoice outstanding"
-              style="width: 100%;background:#D3D3D3;color:red;text-align:center"
-            >
-              <el-table-column
-                prop="number"
-                label="Number"
-              />
-              <el-table-column
-                prop="date"
-                label="Date"
-              />
-              <el-table-column
-                prop="subTotal"
-                label="Sub Total"
-              />
-              <el-table-column
-                prop="tax"
-                label="Total Excise Tax"
-              />
-              <el-table-column
-                prop="total"
-                label="Total Due"
-              />
-              <el-table-column
-                prop="pTotal"
-                label="Total Collected"
-              />
-              <el-table-column
-                prop="pTax"
-                label="Total Collected Tax"
-              />
-              <el-table-column
-                prop="rTotal"
-                label="Remaining Sub Total"
-              />
-              <el-table-column
-                prop="rTax"
-                label="Remaining Tax"
-              />
-              <el-table-column
-                prop="rTotal"
-                label="View"
-              />
-              <el-table-column
-                prop="rTax"
-                label="Download"
-              />
-              />
-            </el-table>
-            <h3>Pending Orders</h3>
-            <el-table
-              :data="props.row.pendingOrders"
-              border
-              show-summary
-              sum-text="Total"
-              style="width: 100%;background:#E42217;text-align:center"
-            >
-              <el-table-column
-                prop="number"
-                label="Number"
-              />
-              <el-table-column
-                prop="date"
-                label="Date"
-              />
-              <el-table-column
-                align="center"
-                prop="base_price"
-                label="TBP"
-              />
-              <el-table-column
-                align="center"
-                prop="discount"
-                label="Discount"
-              />
-              <el-table-column
-                align="center"
-                prop="e_discount"
-                label="Extra Discount"
-              />
-              <el-table-column
-                align="center"
-                prop="extended"
-                label="Sub"
-              />
-              <el-table-column
-                align="center"
-                prop="prValue"
-                label="PR-Value"
-              />
-              <el-table-column
-                align="center"
-                prop="tax"
-                label="ETax"
-              />
-              <el-table-column
-                align="center"
-                prop="adjust_price"
-                label="Total Due"
-              />
+                width="50"
               />
             </el-table>
           </template>
@@ -211,7 +108,7 @@
         <el-table-column
           align="center"
           prop="number"
-          label="Date"
+          label="Sales Order"
           width="100"
         />
         <el-table-column
@@ -221,55 +118,37 @@
         />
         <el-table-column
           align="center"
-          prop="distributor.companyname"
+          prop="companyname"
           label="Distributor"
           width="200"
         />
         <el-table-column
           align="center"
-          prop="base_price"
-          label="TBP"
+          prop="adjust_price"
+          label="Total Cost"
           width="100"
         />
         <el-table-column
           align="center"
-          prop="discount"
-          label="Discount"
+          prop="date"
+          label="Date"
+          width="150"
+        />
+        <el-table-column
+          align="center"
+          prop="fTime"
+          label="ETC"
           width="90"
         />
         <el-table-column
           align="center"
-          prop="e_discount"
-          label="Extra Discount"
-          width="75"
-        />
-        <el-table-column
-          align="center"
-          prop="extended"
-          label="Sub"
-          width="100"
-        />
-        <el-table-column
-          align="center"
-          prop="prValue"
-          label="PR-Value"
-          width="70"
-        />
-        <el-table-column
-          align="center"
-          prop="tax"
-          label="ETax"
-          width="70"
-        />
-        <el-table-column
-          align="center"
-          prop="adjust_price"
-          label="Total Due"
+          prop="priorityLabel"
+          label="Priority"
           width="100"
         />
         <el-table-column align="center" label="Actions" width="150">
           <template slot-scope="scope">
-            <el-dropdown trigger="click" @command="handleRowAction">
+            <el-dropdown trigger="click">
               <el-button type="primary">
                 Actions<i class="el-icon-arrow-down el-icon--right" />
               </el-button>
@@ -285,7 +164,158 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination v-show="total>0" :total="total" :page.sync="query.page" :limit.sync="query.limit" @pagination="fnLoadData" />
+      <pagination v-show="total>0" :total="total" :page.sync="query.page" :limit.sync="query.limit" @pagination="fnLoadDataFulfillment" />
+      <h2>Problematic Orders</h2>
+      <el-row>
+        <el-col :sm="12">
+          <el-date-picker
+            v-model="value1"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="To"
+            start-placeholder="Start date"
+            end-placeholder="End date"
+            format="MM/dd/yyyy"
+            value-format="yyyy-MM-dd"
+            :picker-options="pickerOptions"
+            style="width:500px;"
+            @change="handleProblemDateChange"
+          />
+        </el-col>
+        <el-col :sm="12" style="text-align:right">
+          <el-input v-model="query.keyword" placeholder="Search" style="width: 200px;" class="filter-item" @keyup.enter.native="handleProblemFilter" />
+        </el-col>
+      </el-row>
+      <el-table ref="mainProblemTbl" v-loading="problemLoading" :data="listProblem" border fit highlight-current-row style="width: 100%">
+        <el-table-column align="center" type="expand">
+          <template slot-scope="props">
+            <el-table
+              :data="props.row.items"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="index"
+                label="No"
+                width="50"
+              />
+              <el-table-column
+                prop="description"
+                label="Description"
+              />
+              <el-table-column
+                prop="qty"
+                label="Qty"
+                width="50"
+              />
+              <el-table-column
+                prop="units"
+                label="Units"
+                width="80"
+              />
+              <el-table-column
+                prop="unit_price"
+                label="Unit Price"
+                width="50"
+              />
+              <el-table-column
+                prop="cpu"
+                label="CPU"
+                width="80"
+              />
+              <el-table-column
+                prop="discount"
+                label="Discount"
+                width="100"
+              />
+              <el-table-column
+                prop="discount_label"
+                label="Discount Type"
+                width="120"
+              />
+              <el-table-column
+                prop="e_discount"
+                label="Extra Discount"
+                width="120"
+              />
+              <el-table-column
+                prop="sub_total"
+                label="Sub Total"
+                width="120"
+              />
+              <el-table-column
+                prop="less_discount"
+                label="Extended"
+                width="100"
+              />
+              <el-table-column
+                prop="tax_note"
+                label="Line Note"
+                width="150"
+              />
+              <el-table-column
+                prop="adjust_price"
+                label="Adjust Price"
+                width="150"
+              />
+            </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="index"
+          label="No"
+          width="50"
+        />
+        <el-table-column
+          align="center"
+          prop="number"
+          label="Sales Order"
+          width="100"
+        />
+        <el-table-column
+          align="center"
+          prop="clientname"
+          label="Client"
+        />
+        <el-table-column
+          align="center"
+          prop="companyname"
+          label="Distributor"
+          width="200"
+        />
+        <el-table-column
+          align="center"
+          prop="adjust_price"
+          label="Total Cost"
+          width="100"
+        />
+        <el-table-column
+          align="center"
+          prop="date"
+          label="Date"
+          width="150"
+        />
+        <el-table-column align="center" label="Actions" width="150">
+          <template slot-scope="scope">
+            <el-dropdown trigger="click">
+              <el-button type="primary">
+                Actions<i class="el-icon-arrow-down el-icon--right" />
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>
+                  <router-link target="_blank" :to="'page1?id=' + scope.row.id">
+                    <i class="el-icon-document" />View
+                  </router-link>
+                </el-dropdown-item>
+                <el-dropdown-item :command="scope.row.key + ',1'" icon="el-icon-download">CSV</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination v-show="totalProblem>0" :total="totalProblem" :page.sync="queryProblem.page" :limit.sync="queryProblem.limit" @pagination="fnLoadDataProblem" />
     </div>
   </div>
 </template>
@@ -295,12 +325,14 @@ import { defaultRage } from '@/utils/datemanage'
 import Pagination from '@/components/Pagination'
 const wbOrderResource = new WBOrderResource()
 export default {
-  name: 'WBOrderArchive0',
+  name: 'WBOrderArchive1',
   components: { Pagination },
   data() {
     return {
-      list: [],
-      loading: false,
+      listFulfillment: [],
+      listProblem: [],
+      fulfillmentLoading: false,
+      problemLoading: false,
       pickerOptions: {
         shortcuts: [{
           text: 'Last week',
@@ -329,8 +361,15 @@ export default {
         }]
       },
       value2: defaultRage(),
+      value1: defaultRage(),
       total: 0,
+      totalProblem: 0,
       query: {
+        page: 1,
+        limit: 10,
+        keyword: ''
+      },
+      queryProblem: {
         page: 1,
         limit: 10,
         keyword: ''
@@ -338,33 +377,10 @@ export default {
     }
   },
   created() {
-    this.fnLoadData()
+    this.fnLoadDataFulfillment()
+    this.fnLoadDataProblem()
   },
   methods: {
-    async handleExpandRow(row, expanded) {
-      let bExpanded = false
-      expanded.forEach(element => {
-        if (element.id === row.id) {
-          bExpanded = true
-        }
-      })
-      if (bExpanded && !row.bLoaded) {
-        const loading = this.$loading({
-          lock: true,
-          text: 'Loading',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        })
-        const res = await wbOrderResource.getPendingDetail(row.id)
-        this.list[row.key] = { ...this.list[row.key], ...res.customerFinacialInfo }
-        res.pendingOrders.forEach((element, key) => {
-          res.pendingOrders[key] = { ...res.pendingOrders[key], ...res.pendingOrders[key].total_info }
-        })
-        this.list[row.key].pendingOrders = res.pendingOrders
-        this.list[row.key].bLoaded = true
-        loading.close()
-      }
-    },
     getMainTblSummaries(param) {
       const { columns, data } = param
       const sums = []
@@ -418,30 +434,57 @@ export default {
       return sums
     },
     handleDateChange() {
-      this.fnLoadData()
+      this.fnLoadDataFulfillment()
+    },
+    handleProblemDateChange() {
+      this.fnLoadDataProblem()
     },
     handleFilter() {
       this.query.page = 1
-      this.fnLoadData()
+      this.fnLoadDataFulfillment()
     },
-    handleRowAction(param) {
-      console.log(param)
+    handleProblemFilter() {
+      this.queryProblem.page = 1
+      this.fnLoadDataProblem()
     },
-    async fnLoadData() {
-      this.loading = true
+    setRowStyle({ row, rowIndex }) {
+      if (row.priority.bk_color != null) {
+        return { 'background-color': row.priority.bk_color, 'color': row.priority.font_color }
+      }
+    },
+    async fnLoadDataFulfillment() {
+      this.fulfillmentLoading = true
       const query = { ...this.query }
       const { limit, page } = this.query
       query.start_date = this.value2[0]
       query.end_date = this.value2[1]
-      const { orders, total } = await wbOrderResource.archive0(query)
-      this.list = orders
-      this.total = total
-      this.list.forEach((element, index) => {
-        this.list[index] = { ...element, ...element.total_info }
-        this.list[index]['index'] = (page - 1) * limit + index + 1
-        this.list[index]['key'] = index
+      query.status = 1
+      const { orders, total } = await wbOrderResource.archive1(query)
+      orders.forEach((element, index) => {
+        orders[index] = { ...element, ...element.total_info }
+        orders[index]['index'] = (page - 1) * limit + index + 1
+        orders[index]['key'] = index
       })
-      this.loading = false
+      this.listFulfillment = orders
+      this.total = total
+      this.fulfillmentLoading = false
+    },
+    async fnLoadDataProblem() {
+      this.problemLoading = true
+      const query = { ...this.queryProblem }
+      const { limit, page } = this.queryProblem
+      query.start_date = this.value1[0]
+      query.end_date = this.value1[1]
+      query.status = 2
+      const { orders, total } = await wbOrderResource.archive1(query)
+      orders.forEach((element, index) => {
+        orders[index] = { ...element, ...element.total_info }
+        orders[index]['index'] = (page - 1) * limit + index + 1
+        orders[index]['key'] = index
+      })
+      this.listProblem = orders
+      this.totalProblem = total
+      this.problemLoading = false
     }
   }
 }

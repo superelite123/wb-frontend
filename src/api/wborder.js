@@ -29,6 +29,14 @@ class WBOrderResource extends Resource {
     })
   }
 
+  archive1(data) {
+    return request({
+      url: '/' + this.uri + '/archive1',
+      method: 'get',
+      params: data
+    })
+  }
+
   getPendingDetail(id) {
     return request({
       url: '/' + this.uri + '/archive0/customer-detail?id=' + id,

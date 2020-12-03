@@ -89,7 +89,7 @@
         <el-table-column
           prop="cpu"
           label="CPU"
-          width="60"
+          width="90"
         />
         <el-table-column
           prop="discount"
@@ -163,14 +163,23 @@ export default {
   methods: {
     async fetchData() {
       this.order = await wbOrderResource.getOrderDetail(this.$route.query.id)
+      this.order.items.forEach((element, key) => {
+        this.order.items[key].unit_price = '$' + this.order.items[key].unit_price
+        this.order.items[key].cpu = '$' + this.order.items[key].cpu
+        this.order.items[key].discount = '$' + this.order.items[key].discount
+        this.order.items[key].e_discount = '$' + this.order.items[key].e_discount
+        this.order.items[key].bp = '$' + this.order.items[key].bp
+        this.order.items[key].extended = '$' + this.order.items[key].extended
+        this.order.items[key].ap = '$' + this.order.items[key].ap
+      })
       const total = this.order.total_info
-      this.orderTotal.push({ name: 'Total Base Price:', value: total.base_price })
-      this.orderTotal.push({ name: 'Discount Amount:', value: total.discount })
-      this.orderTotal.push({ name: 'Total Extra Discount:', value: total.e_discount })
-      this.orderTotal.push({ name: 'Promotion Value:', value: total.promotion })
-      this.orderTotal.push({ name: 'Sub Total:', value: total.extended })
-      this.orderTotal.push({ name: 'CA Excise Tax Based On Total Base Price @27%:', value: total.tax })
-      this.orderTotal.push({ name: 'Total Due:', value: total.adjust_price })
+      this.orderTotal.push({ name: 'Total Base Price:', value: '$' + total.base_price })
+      this.orderTotal.push({ name: 'Discount Amount:', value: '$' + total.discount })
+      this.orderTotal.push({ name: 'Total Extra Discount:', value: '$' + total.e_discount })
+      this.orderTotal.push({ name: 'Promotion Value:', value: '$' + total.promotion })
+      this.orderTotal.push({ name: 'Sub Total:', value: '$' + total.extended })
+      this.orderTotal.push({ name: 'CA Excise Tax Based On Total Base Price @27%:', value: '$' + total.tax })
+      this.orderTotal.push({ name: 'Total Due:', value: '$' + total.adjust_price })
     }
   }
 }

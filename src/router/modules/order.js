@@ -24,6 +24,18 @@ const orderRoutes = {
       component: () => import('@/views/orders/archive0'),
       name: 'OrderPending',
       meta: { title: 'WB Pending PO', icon: 'el-icon-folder-opened', permissions: ['manage customer'] }
+    },
+    {
+      path: 'archive1',
+      component: () => import('@/views/orders/archive1'),
+      name: 'OrderPending',
+      meta: { title: 'Walnut Fulfillment', icon: 'el-icon-folder-opened', permissions: ['manage customer'] }
+    },
+    {
+      path: 'archive2',
+      component: () => import('@/views/orders/archive2'),
+      name: 'OrderFulfilled',
+      meta: { title: 'Walnut to Deliver', icon: 'el-icon-folder-opened', permissions: ['manage customer'] }
     }
   ]
 }
