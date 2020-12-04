@@ -24,7 +24,18 @@
           <el-input v-model="query.keyword" placeholder="Search" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
         </el-col>
       </el-row>
-      <el-table ref="mainTbl" v-loading="loading" show-summary :data="list" :summary-method="getMainTblSummaries" border fit highlight-current-row style="width: 100%" @expand-change="handleExpandRow">
+      <el-table
+        ref="mainTbl"
+        v-loading="loading"
+        show-summary
+        :data="list"
+        :summary-method="getMainTblSummaries"
+        border
+        fit
+        highlight-current-row
+        style="width: 100%"
+        @expand-change="handleExpandRow"
+      >
         <el-table-column align="center" type="expand">
           <template slot-scope="props">
             <el-table
